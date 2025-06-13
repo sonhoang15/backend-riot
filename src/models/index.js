@@ -29,7 +29,7 @@ const customizeConfig = {
   timezone: "+07:00"
 }
 sequelize = new Sequelize(
-  process.env.DB_DATABASE_NAME,
+  process.env.DB_DATABASE,
   process.env.DB_USERNAME,
   process.env.DB_PASSWORD,
   customizeConfig
