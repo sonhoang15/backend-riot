@@ -1,5 +1,6 @@
 
-const { Op, where } = require("sequelize");
+const sequelize = require('../models').sequelize;  // hoặc đường dẫn tới file khởi tạo sequelize
+const { Op, Sequelize } = require('sequelize');
 import { raw } from "body-parser";
 import db from "../models";
 
@@ -8,7 +9,12 @@ let getInforPageHome = (limitInput) => {
         try {
             let pages = await db.inforpages.findAll({
                 limit: limitInput,
-                where: { key: { [Op.in]: ['P0', 'P1', 'P2', 'P3'] } },
+                where: Sequelize.where(
+                    Sequelize.cast(Sequelize.col("inforpages.PageId"), 'TEXT'),
+                    {
+                        [Op.in]: ['A1', 'A2', 'A3', 'A4']
+                    }
+                ),
                 order: [['PageId', 'DESC']],
                 include: [
                     { model: db.Allcodes, as: 'PageData', attributes: ['value_En', 'value_Vi'] }
@@ -30,7 +36,12 @@ let getAllpages = () => {
     return new Promise(async (resolve, reject) => {
         try {
             let pages = await db.inforpages.findAll({
-                where: { PageId: { [Op.in]: ['A1', 'A2', 'A3', 'A4'] } },
+                where: sequelize.where(
+                    sequelize.cast(sequelize.col("inforpages.PageId"), 'VARCHAR'),
+                    {
+                        [Op.in]: ['A1', 'A2', 'A3', 'A4']
+                    }
+                ),
                 attributes: {
                     exclude: ['createdAt', 'updatedAt']
                 }, include: [
@@ -39,7 +50,8 @@ let getAllpages = () => {
                         as: 'locations',
                         attributes: {
                             exclude: ['createdAt', 'updatedAt']
-                        }
+                        },
+                        on: Sequelize.literal(`CAST("inforpages"."id" AS TEXT) = "locations"."PageId"`)
                     }
                 ],
                 raw: true
