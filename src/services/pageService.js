@@ -10,7 +10,7 @@ let getInforPageHome = (limitInput) => {
             let pages = await db.inforpages.findAll({
                 limit: limitInput,
                 where: Sequelize.where(
-                    Sequelize.cast(Sequelize.col("inforpages.PageId"), 'TEXT'),
+                    Sequelize.cast(Sequelize.col("inforpages.PageId"), 'VARCHAR'),
                     {
                         [Op.in]: ['A1', 'A2', 'A3', 'A4']
                     }
